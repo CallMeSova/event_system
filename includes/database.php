@@ -9,6 +9,10 @@ function getConnection() {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+
+    // ตั้งค่าภาษาไทย
+    $conn->set_charset("utf8mb4");
+
     return $conn;
 }
 

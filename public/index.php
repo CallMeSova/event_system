@@ -12,4 +12,6 @@ require_once INCLUDE_DIR . '/otp.php';
 require_once INCLUDE_DIR . '/router.php';
 require_once INCLUDE_DIR . '/view.php';
 
+require_once DATABASES_DIR . '/users.php';
+
 dispath($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
