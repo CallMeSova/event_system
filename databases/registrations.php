@@ -101,3 +101,14 @@ function getConfirmedParticipantCount($event_id) {
     $result = $stmt->get_result()->fetch_assoc();
     return $result['total'] ?? 0;
 }
+
+// ฟังก์ชันนับจำนวนคนที่ได้รับอนุมัติหรือเข้างานแล้ว
+function getConfirmedCount($event_id) {
+    global $conn;
+    // ใช้ Prepared Statement เพื่อความปลอดภัยและประสิทธิภาพ
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM registrations WHERE event_id = ? AND reg_status IN ('approved', 'attended')");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    return $result['total'] ?? 0;
+}
