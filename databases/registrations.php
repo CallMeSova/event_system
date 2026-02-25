@@ -39,3 +39,19 @@ function markAsAttended($reg_id) {
     $stmt->bind_param("i", $reg_id);
     return $stmt->execute();
 }
+
+// ฟังก์ชันดึงประวัติการสมัครกิจกรรมของผู้ใช้คนนั้นๆ
+function getUserRegistrationHistory($user_id) {
+    global $conn;
+    // ใช้ Prepared Statement และ JOIN เพื่อดึงชื่อกิจกรรมและข้อมูลการสมัคร
+    $sql = "SELECT r.reg_status, r.create_date AS reg_date, e.event_name, e.event_id, e.start_date 
+            FROM registrations r 
+            JOIN events e ON r.event_id = e.event_id 
+            WHERE r.user_id = ? 
+            ORDER BY r.create_date DESC";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    return $stmt->get_result(); // ส่งคืนชุดข้อมูลผลลัพธ์
+}
