@@ -14,6 +14,7 @@
         <a href="/create_event">สร้างกิจกรรม</a>
 
         <?php if (isset($_SESSION['user_id'])) : ?>
+            <a href="/my_history">ประวัติการเข้าร่วมกิจกรรม</a>
             <span>สวัสดีคุณ <?php echo $_SESSION['full_name']; ?></span>
             <a href="/logout">ออกจากระบบ</a>
         <?php else : ?>
