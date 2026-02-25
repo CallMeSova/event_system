@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Update ข้อมูลพื้นฐาน
     $sql_update = "UPDATE events SET 
                     event_name = '$event_name', 
-                    description = '$description', 
+                    description = '$description',
                     location = '$location', 
                     start_date = '$start_date', 
                     end_date = '$end_date', 
