@@ -67,3 +67,33 @@ function deleteEvent($event_id, $current_user_id) {
 
     return $stmt_del_event->execute();
 }
+
+// ฟังก์ชันดึงข้อมูลกิจกรรมพร้อมตรวจสอบสิทธิ์ผู้สร้าง
+function getEventForEdit($event_id, $user_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM events WHERE event_id = ? AND creator_id = ?");
+    $stmt->bind_param("ii", $event_id, $user_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรม
+function getEventImages($event_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM event_img WHERE event_id = ?");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
+// ฟังก์ชันอัปเดตข้อมูลกิจกรรมพื้นฐาน
+function updateEvent($id, $name, $desc, $loc, $start, $end, $max) {
+    global $conn;
+    $sql = "UPDATE events SET 
+                event_name = ?, description = ?, location = ?, 
+                start_date = ?, end_date = ?, max_people = ? 
+            WHERE event_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssii", $name, $desc, $loc, $start, $end, $max, $id);
+    return $stmt->execute();
+}
