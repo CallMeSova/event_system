@@ -1,15 +1,3 @@
-const imageInput = document.getElementById('imageInput');
-const errorMsg = document.getElementById('error-msg');
-
-imageInput.addEventListener('change', function () {
-    if (this.files.length > 5) {
-        errorMsg.innerText = "คุณสามารถเลือกรูปภาพได้ไม่เกิน 5 รูป";
-        this.value = "";
-    } else {
-        errorMsg.innerText = "";
-    }
-});
-
 function clearImages() {
     imageInput.value = "";
     errorMsg.innerText = "";

@@ -35,10 +35,9 @@
         </div><br>
 
         <div>
-            <label>รูปภาพกิจกรรม (สูงสุด 5 รูป):</label><br>
+            <label>รูปภาพกิจกรรม:</label><br>
             <input type="file" name="images[]" id="imageInput" accept="image/*" multiple>
             <button type="button" onclick="clearImages()">ล้างรูปภาพ</button>
-            <div id="error-msg" style="color: red;"></div>
         </div><br>
 
         <button type="submit">ยืนยันการสร้างกิจกรรม</button>
