@@ -22,4 +22,12 @@
 
 <button type="button">ปุ่มเข้าร่วมกิจกรรม</button>
 
+<?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']): ?>
+    <a href="/delete_event?id=<?php echo $event['event_id']; ?>"
+        onclick="return confirm('คุณแน่ใจนะว่าจะลบกิจกรรมนี้?')"
+        style="color: red; font-weight: bold;">
+        [ลบกิจกรรมนี้]
+    </a>
+<?php endif; ?>
+
 <?php include 'footer.php'; ?>
