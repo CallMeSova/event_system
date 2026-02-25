@@ -17,9 +17,19 @@
                     <td class="border p-2"><?php echo $row['start_date']; ?></td>
                     <td class="border p-2 font-bold">
                         <?php
-                        // แสดงสีตามสถานะ reg_status
                         $status = $row['reg_status'];
-                        $color = ($status == 'approved') ? 'text-green-600' : (($status == 'rejected') ? 'text-red-600' : 'text-yellow-600');
+
+                        // กำหนดสีตามสถานะต่างๆ
+                        if ($status == 'approved') {
+                            $color = 'text-green-600'; // สีเขียว: อนุมัติแล้ว
+                        } elseif ($status == 'rejected') {
+                            $color = 'text-red-600';   // สีแดง: ถูกปฏิเสธ
+                        } elseif ($status == 'attended') {
+                            $color = 'text-blue-600';  // สีน้ำเงิน: เข้าร่วมงานเรียบร้อยแล้ว (หลังแอดมินตรวจ OTP)
+                        } else {
+                            $color = 'text-yellow-600'; // สีเหลือง: รอการตรวจสอบ (pending)
+                        }
+
                         echo "<span class='$color'>" . strtoupper($status) . "</span>";
                         ?>
                     </td>

@@ -56,4 +56,20 @@
     <?php endif; ?>
 </table>
 
+<div style="background: #fdf2e9; padding: 20px; border-radius: 10px; border: 2px solid #e67e22; margin-bottom: 25px;">
+    <h3 style="margin-top: 0; color: #d35400;">🔎 ตรวจสอบรหัส OTP (เช็คชื่อหน้างาน)</h3>
+    <form action="/check_otp" method="POST" style="display: flex; gap: 10px; align-items: center;">
+        <input type="hidden" name="event_id" value="<?php echo $event_id; ?>">
+
+        <input type="text" name="input_otp" placeholder="กรอกเลข 6 หลัก"
+            maxlength="6" required
+            style="font-size: 20px; padding: 10px; width: 200px; text-align: center; letter-spacing: 5px;">
+
+        <button type="submit" style="background: #e67e22; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            ยืนยันการเข้างาน
+        </button>
+    </form>
+    <p style="font-size: 13px; color: #666; margin-top: 10px;">* ระบบจะคำนวณรหัสปัจจุบันเพื่อตรวจสอบโดยอัตโนมัติ</p>
+</div>
+
 <?php include 'footer.php'; ?>
