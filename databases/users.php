@@ -1,6 +1,14 @@
 <?php
 
-// ฟังก์ชันสำหรับเช็คว่าอีเมลนี้ถูกใช้งานไปหรือยัง
+/**
+ * ไฟล์: databases/users.php
+ * รวมฟังก์ชันจัดการข้อมูลผู้ใช้งาน (Users Model)
+ */
+
+/**
+ * ฟังก์ชันสำหรับเช็คว่าอีเมลนี้ถูกใช้งานไปหรือยัง
+ * ใช้ในไฟล์: routes/register.php
+ */
 function isEmailExists($email) {
     global $conn;
     $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
@@ -10,7 +18,10 @@ function isEmailExists($email) {
     return $result->num_rows > 0;
 }
 
-// ฟังก์ชันสำหรับลงทะเบียนผู้ใช้ใหม่
+/**
+ * ฟังก์ชันสำหรับลงทะเบียนผู้ใช้ใหม่
+ * ใช้ในไฟล์: routes/register.php
+ */
 function createUser($full_name, $email, $password, $gender, $birth_date, $phone, $role = 'user') {
     global $conn;
     $sql = "INSERT INTO users (full_name, email, password, gender, birth_date, phone_number, role, created_at) 
@@ -21,7 +32,10 @@ function createUser($full_name, $email, $password, $gender, $birth_date, $phone,
     return $stmt->execute();
 }
 
-// ฟังก์ชันสำหรับดึงข้อมูลผู้ใช้จาก Email
+/**
+ * ฟังก์ชันสำหรับดึงข้อมูลผู้ใช้จาก Email (ใช้ตรวจสอบตอน Login)
+ * ใช้ในไฟล์: routes/login.php
+ */
 function getUserByEmail($email) {
     global $conn; // ใช้การเชื่อมต่อจาก database.php
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");

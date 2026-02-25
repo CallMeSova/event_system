@@ -1,6 +1,14 @@
 <?php
 
-// ฟังก์ชันสร้างกิจกรรมใหม่ 
+/**
+ * ไฟล์: databases/events.php
+ * รวมฟังก์ชันจัดการข้อมูลกิจกรรม (Events Model)
+ */
+
+/**
+ * ฟังก์ชันสร้างกิจกรรมใหม่ 
+ * ใช้ในไฟล์: routes/create_event.php
+ */
 function createEvent($name, $creator, $desc, $loc, $start, $end, $max) {
     global $conn;
     $sql = "INSERT INTO events (event_name, creator_id, description, location, start_date, end_date, max_people, status) 
@@ -15,7 +23,10 @@ function createEvent($name, $creator, $desc, $loc, $start, $end, $max) {
     return false;
 }
 
-// ฟังก์ชันบันทึกที่อยู่รูปภาพลงฐานข้อมูล
+/**
+ * ฟังก์ชันบันทึกที่อยู่รูปภาพลงฐานข้อมูล
+ * ใช้ในไฟล์: routes/create_event.php และ routes/edit_event.php
+ */
 function saveEventImage($event_id, $file_name) {
     global $conn;
     $sql = "INSERT INTO event_img (event_id, img_path) VALUES (?, ?)";
@@ -24,7 +35,10 @@ function saveEventImage($event_id, $file_name) {
     return $stmt->execute();
 }
 
-// ฟังก์ชันสำหรับลบกิจกรรมและข้อมูลที่เกี่ยวข้องทั้งหมด
+/**
+ * ฟังก์ชันสำหรับลบกิจกรรมและข้อมูลที่เกี่ยวข้องทั้งหมด (รวมถึงไฟล์รูปภาพ)
+ * ใช้ในไฟล์: routes/delete_event.php
+ */
 function deleteEvent($event_id, $current_user_id) {
     global $conn;
 
@@ -50,7 +64,7 @@ function deleteEvent($event_id, $current_user_id) {
     $result_imgs = $stmt_img->get_result();
 
     while ($img = $result_imgs->fetch_assoc()) {
-        $path = "../public/uploads/" . $img['img_path']; // ปรับ Path ให้ถูกต้อง
+        $path = "../public/uploads/" . $img['img_path'];
         if (file_exists($path)) {
             unlink($path); // ลบไฟล์รูปจริงออกจาก Disk
         }
@@ -68,7 +82,10 @@ function deleteEvent($event_id, $current_user_id) {
     return $stmt_del_event->execute();
 }
 
-// ฟังก์ชันดึงข้อมูลกิจกรรมพร้อมตรวจสอบสิทธิ์ผู้สร้าง
+/**
+ * ฟังก์ชันดึงข้อมูลกิจกรรมพร้อมตรวจสอบสิทธิ์ผู้สร้าง
+ * ใช้ในไฟล์: routes/edit_event.php
+ */
 function getEventForEdit($event_id, $user_id) {
     global $conn;
     $stmt = $conn->prepare("SELECT * FROM events WHERE event_id = ? AND creator_id = ?");
@@ -77,7 +94,10 @@ function getEventForEdit($event_id, $user_id) {
     return $stmt->get_result()->fetch_assoc();
 }
 
-// ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรม
+/**
+ * ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรม
+ * ใช้ในไฟล์: routes/edit_event.php
+ */
 function getEventImages($event_id) {
     global $conn;
     $stmt = $conn->prepare("SELECT * FROM event_img WHERE event_id = ?");
@@ -86,7 +106,10 @@ function getEventImages($event_id) {
     return $stmt->get_result();
 }
 
-// ฟังก์ชันอัปเดตข้อมูลกิจกรรมพื้นฐาน
+/**
+ * ฟังก์ชันอัปเดตข้อมูลกิจกรรมพื้นฐาน
+ * ใช้ในไฟล์: routes/edit_event.php
+ */
 function updateEvent($id, $name, $desc, $loc, $start, $end, $max) {
     global $conn;
     $sql = "UPDATE events SET 
@@ -98,10 +121,12 @@ function updateEvent($id, $name, $desc, $loc, $start, $end, $max) {
     return $stmt->execute();
 }
 
-// ฟังก์ชันดึงข้อมูลกิจกรรมแบบละเอียด (รวมชื่อผู้จัดงาน)
+/**
+ * ฟังก์ชันดึงข้อมูลกิจกรรมแบบละเอียด (รวมชื่อผู้จัดงาน)
+ * ใช้ในไฟล์: routes/event_detail.php
+ */
 function getEventDetail($event_id) {
     global $conn;
-    // ใช้ JOIN เพื่อดึงชื่อผู้สร้าง (creator_name) มาแสดงผลในหน้าเดียวเลยครับ
     $sql = "SELECT events.*, users.full_name AS creator_name 
             FROM events 
             JOIN users ON events.creator_id = users.user_id 
@@ -113,7 +138,10 @@ function getEventDetail($event_id) {
     return $stmt->get_result()->fetch_assoc();
 }
 
-// ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรมนั้นๆ
+/**
+ * ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรมนั้นๆ
+ * ใช้ในไฟล์: routes/event_detail.php
+ */
 function getImagesByEventId($event_id) {
     global $conn;
     $stmt = $conn->prepare("SELECT * FROM event_img WHERE event_id = ?");
@@ -128,11 +156,13 @@ function getImagesByEventId($event_id) {
     return $images;
 }
 
-// ฟังก์ชันสำหรับดึงรายการกิจกรรมทั้งหมดพร้อมระบบค้นหา
+/**
+ * ฟังก์ชันสำหรับดึงรายการกิจกรรมทั้งหมดพร้อมระบบค้นหา
+ * ใช้ในไฟล์: routes/home.php
+ */
 function getEvents($search_name = '', $start_date = '', $end_date = '') {
     global $conn;
 
-    // 1. เตรียม SQL พื้นฐาน (ดึงกิจกรรม + รูปแรก)
     $sql = "SELECT events.*, event_img.img_path 
             FROM events 
             LEFT JOIN event_img ON events.event_id = event_img.event_id 
@@ -141,7 +171,6 @@ function getEvents($search_name = '', $start_date = '', $end_date = '') {
     $params = [];
     $types = "";
 
-    // 2. เพิ่มเงื่อนไขการค้นหา (ใช้ Prepared Statement แทนการใส่ตัวแปรตรงๆ)
     if (!empty($search_name)) {
         $sql .= " AND events.event_name LIKE ?";
         $params[] = "%$search_name%";
@@ -159,7 +188,6 @@ function getEvents($search_name = '', $start_date = '', $end_date = '') {
 
     $stmt = $conn->prepare($sql);
 
-    // 3. Bind พารามิเตอร์ถ้ามีการค้นหา
     if (!empty($params)) {
         $stmt->bind_param($types, ...$params);
     }
