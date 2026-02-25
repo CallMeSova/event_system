@@ -127,3 +127,43 @@ function getImagesByEventId($event_id) {
     }
     return $images;
 }
+
+// ฟังก์ชันสำหรับดึงรายการกิจกรรมทั้งหมดพร้อมระบบค้นหา
+function getEvents($search_name = '', $start_date = '', $end_date = '') {
+    global $conn;
+
+    // 1. เตรียม SQL พื้นฐาน (ดึงกิจกรรม + รูปแรก)
+    $sql = "SELECT events.*, event_img.img_path 
+            FROM events 
+            LEFT JOIN event_img ON events.event_id = event_img.event_id 
+            WHERE 1=1";
+
+    $params = [];
+    $types = "";
+
+    // 2. เพิ่มเงื่อนไขการค้นหา (ใช้ Prepared Statement แทนการใส่ตัวแปรตรงๆ)
+    if (!empty($search_name)) {
+        $sql .= " AND events.event_name LIKE ?";
+        $params[] = "%$search_name%";
+        $types .= "s";
+    }
+
+    if (!empty($start_date) && !empty($end_date)) {
+        $sql .= " AND (events.start_date >= ? AND events.end_date <= ?)";
+        $params[] = $start_date;
+        $params[] = $end_date;
+        $types .= "ss";
+    }
+
+    $sql .= " GROUP BY events.event_id ORDER BY events.event_id DESC";
+
+    $stmt = $conn->prepare($sql);
+
+    // 3. Bind พารามิเตอร์ถ้ามีการค้นหา
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    return $stmt->get_result();
+}
