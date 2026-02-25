@@ -24,6 +24,16 @@ function getFilePath($uri) {
 
 function dispath($uri, $method) {
     $uri = normalizeURI($uri);
+
+    $public_page = ['home', 'login', 'register',];
+    if (!in_array($uri, $public_page) && !isset($_SESSION['user_id'])) {
+        echo "<script>
+                alert('กรุณาเข้าสู่ระบบเพื่อใช้งานส่วนนี้');
+                window.location.href = '/login';
+              </script>";
+        exit;
+    }
+
     if (!in_array(strtoupper($method), ALLOW_METHOD)) {
         notFound();
     }
