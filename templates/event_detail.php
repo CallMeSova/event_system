@@ -1,97 +1,66 @@
 <?php include 'head.php'; ?>
-<?php global $conn; ?>
 
 <div class="event-header">
-    <h1>ชื่อกิจกรรม: <?php echo $event['event_name']; ?></h1>
+    <h1 class="text-2xl font-bold">ชื่อกิจกรรม: <?php echo $event['event_name']; ?></h1>
+    <p>ผู้จัดงาน: <?php echo $event['creator_name'] ?? 'ไม่ระบุ'; ?></p>
     <p>สถานที่: <?php echo $event['location']; ?></p>
     <p>รับสมัคร: <?php echo $event['max_people']; ?> คน</p>
-    <p>วันเริ่ม: <?php echo $event['start_date']; ?></p>
-    <p>วันจบ: <?php echo $event['end_date']; ?></p>
+    <p>ช่วงเวลา: <?php echo date('d/m/Y H:i', strtotime($event['start_date'])); ?> ถึง <?php echo date('d/m/Y H:i', strtotime($event['end_date'])); ?></p>
     <p>รายละเอียด: <?php echo $event['description']; ?></p>
 </div>
 
-<h3>รูปภาพประกอบทั้งหมด (<?php echo count($images); ?> รูป):</h3>
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<h3 class="mt-4 font-bold">รูปภาพประกอบ (<?php echo count($images); ?>):</h3>
+<div class="flex gap-3 flex-wrap mt-2">
     <?php if (!empty($images)): ?>
         <?php foreach ($images as $img): ?>
-            <img src="/uploads/<?php echo $img['img_path']; ?>" width="200" style="border-radius: 5px;">
+            <img src="/uploads/<?php echo $img['img_path']; ?>" width="200" class="rounded shadow-sm">
         <?php endforeach; ?>
     <?php else: ?>
-        <p>กิจกรรมนี้ไม่มีรูปภาพ</p>
+        <p class="text-gray-400">กิจกรรมนี้ไม่มีรูปภาพ</p>
     <?php endif; ?>
 </div>
 
-<hr>
+<hr class="my-6">
 
 <?php
-$registration_status = null;
-$reg_data = null;
-
-if (isset($_SESSION['user_id'])) {
-    $u_id = $_SESSION['user_id'];
-    $e_id = $event['event_id'];
-    $reg_query = $conn->query("SELECT reg_id, reg_status, create_date FROM registrations WHERE event_id = $e_id AND user_id = $u_id");
-    if ($reg_query && $reg_query->num_rows > 0) {
-        $reg_data = $reg_query->fetch_assoc();
-        $registration_status = $reg_data['reg_status'];
-    }
-}
-
-// --- ส่วนที่เพิ่มใหม่: ระบบเช็คจำนวนคนเต็ม ---
-$current_count = 0;
-$count_query = $conn->query("SELECT COUNT(*) as total FROM registrations WHERE event_id = {$event['event_id']} AND reg_status IN ('approved', 'attended')");
-if ($count_query) {
-    $row = $count_query->fetch_assoc();
-    $current_count = $row['total'];
-}
-$is_full = ($current_count >= $event['max_people']); // เช็คว่าเต็มหรือยัง
-// --------------------------------------------------
-
+$status = $reg_data['reg_status'] ?? null;
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']):
 ?>
-    <div style="padding: 15px; background: #eef2ff; border-radius: 8px;">
-        <p style="color: blue; font-weight: bold;">🌟 คุณคือผู้สร้างกิจกรรมนี้</p>
-        <a href="/manage_registrations?id=<?php echo $event['event_id']; ?>" style="color: green;">[ดูรายชื่อคนสมัคร]</a>
-        <a href="/edit_event?id=<?php echo $event['event_id']; ?>" style="color: orange; margin-left: 10px;">[แก้ไขกิจกรรม]</a>
-        <a href="/delete_event?id=<?php echo $event['event_id']; ?>" onclick="return confirm('ยืนยันการลบ?')" style="color: red; margin-left: 10px;">[ลบกิจกรรม]</a>
+    <div class="p-4 bg-blue-50 border rounded">
+        <p class="text-blue-700 font-bold">🌟 คุณคือผู้สร้างกิจกรรมนี้</p>
+        <div class="flex gap-4 mt-2">
+            <a href="/manage_registrations?id=<?php echo $event['event_id']; ?>" class="text-green-600 font-medium">จัดการผู้สมัคร</a>
+            <a href="/edit_event?id=<?php echo $event['event_id']; ?>" class="text-orange-500 font-medium">แก้ไข</a>
+            <a href="/delete_event?id=<?php echo $event['event_id']; ?>" class="text-red-600 font-medium" onclick="return confirm('ลบกิจกรรม?')">ลบ</a>
+        </div>
     </div>
 
 <?php else: ?>
-    <div style="margin-top: 20px;">
-        <?php if ($registration_status === 'pending'): ?>
-            <button disabled style="background: #f1c40f; color: black; padding: 10px 20px; border: none; border-radius: 5px;">⏳ รอการอนุมัติจากผู้จัดงาน...</button>
+    <div class="mt-4">
+        <?php if ($status === 'pending'): ?>
+            <button disabled class="bg-yellow-400 px-4 py-2 rounded">⏳ รอการอนุมัติ...</button>
 
-        <?php elseif ($registration_status === 'approved'): ?>
-            <button disabled style="background: #2ecc71; color: white; padding: 10px 20px; border: none; border-radius: 5px;">✅ คุณเข้าร่วมกิจกรรมแล้ว</button>
-            <?php $otp_code = get_event_otp($reg_data['reg_id'], $reg_data['create_date']); ?>
-            <div style="background: #eef2ff; border: 2px dashed #4f46e5; padding: 25px; text-align: center; border-radius: 10px; margin-top: 20px;">
-                <p style="margin: 0; color: #4f46e5; font-weight: bold;">รหัส OTP สำหรับเช็คชื่อหน้างาน (6 หลัก)</p>
-                <h1 style="font-size: 56px; letter-spacing: 12px; margin: 15px 0; color: #1e1b4b;">
-                    <?php echo $otp_code; ?>
-                </h1>
-                <p style="color: #ef4444; font-weight: bold; margin-bottom: 0;">* รหัสจะเปลี่ยนอัตโนมัติทุก 30 นาที</p>
+        <?php elseif ($status === 'approved'): ?>
+            <button disabled class="bg-green-500 text-white px-4 py-2 rounded mb-3">✅ ได้รับการอนุมัติแล้ว</button>
+            <?php $otp = get_event_otp($reg_data['reg_id'], $reg_data['create_date']); ?>
+            <div class="bg-gray-100 p-6 text-center rounded-lg border-2 border-dashed border-blue-500">
+                <p class="font-bold text-blue-600">รหัส OTP เช็คชื่อ (6 หลัก)</p>
+                <h1 class="text-5xl font-mono tracking-widest my-3"><?php echo $otp; ?></h1>
+                <p class="text-red-500 text-xs">* เปลี่ยนทุก 30 นาที</p>
             </div>
 
-        <?php elseif ($registration_status === 'rejected'): ?>
-            <button disabled style="background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px;">❌ ขออภัย คำขอของคุณถูกปฏิเสธ</button>
+        <?php elseif ($status === 'rejected'): ?>
+            <button disabled class="bg-red-500 text-white px-4 py-2 rounded">❌ คำขอถูกปฏิเสธ</button>
 
-        <?php elseif ($registration_status === 'attended'): ?>
-            <div style="text-align: center;">
-                <button disabled style="background: #3498db; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; width: 100%;">
-                    🏁 คุณได้เข้าร่วมงานนี้เรียบร้อยแล้ว
-                </button>
-            </div>
+        <?php elseif ($status === 'attended'): ?>
+            <button disabled class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold w-full">🏁 เข้าร่วมงานเรียบร้อยแล้ว</button>
 
         <?php elseif ($is_full): ?>
-            <button disabled style="background: #95a5a6; color: white; padding: 12px 25px; border: none; border-radius: 5px; width: 100%;">
-                🚫 ขออภัย กิจกรรมนี้เต็มแล้ว (<?php echo $current_count; ?>/<?php echo $event['max_people']; ?>)
-            </button>
+            <button disabled class="bg-gray-400 text-white px-6 py-2 rounded w-full">🚫 เต็มแล้ว (<?php echo $current_count; ?>/<?php echo $event['max_people']; ?>)</button>
 
         <?php else: ?>
             <a href="/register_event?id=<?php echo $event['event_id']; ?>">
-                <button type="button" style="background: #3498db; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                    🎯 ขอเข้าร่วมกิจกรรม (ว่าง: <?php echo $event['max_people'] - $current_count; ?> ที่)
-                </button>
+                <button class="bg-blue-600 text-white px-6 py-2 rounded font-bold">🎯 ขอเข้าร่วม (ว่าง: <?php echo $event['max_people'] - $current_count; ?>)</button>
             </a>
         <?php endif; ?>
     </div>

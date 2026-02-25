@@ -82,3 +82,22 @@ function registerForEvent($event_id, $user_id) {
     $stmt->bind_param("ii", $event_id, $user_id);
     return $stmt->execute();
 }
+
+// ฟังก์ชันดึงสถานะการลงทะเบียนของผู้ใช้สำหรับกิจกรรมหนึ่งๆ
+function getUserRegistration($event_id, $user_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT reg_id, reg_status, create_date FROM registrations WHERE event_id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $event_id, $user_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// ฟังก์ชันเช็คจำนวนคนที่ถูกอนุมัติหรือเข้างานแล้ว
+function getConfirmedParticipantCount($event_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM registrations WHERE event_id = ? AND reg_status IN ('approved', 'attended')");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    return $result['total'] ?? 0;
+}
