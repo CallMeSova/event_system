@@ -1,0 +1,15 @@
+<?php
+
+function getConnection() {
+    $hostname = 'localhost';
+    $dbname = 'event_system';
+    $username = 'Event';
+    $password = '1234';
+    $conn = new mysqli($hostname, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    return $conn;
+}
+
+$conn = getConnection();
