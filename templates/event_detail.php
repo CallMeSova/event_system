@@ -24,24 +24,29 @@
 <hr>
 
 <?php
-// 3. ส่วนดึงสถานะการลงทะเบียน (ปรับ SQL ให้ดึง reg_id และ create_date มาด้วย)
 $registration_status = null;
 $reg_data = null;
 
 if (isset($_SESSION['user_id'])) {
     $u_id = $_SESSION['user_id'];
     $e_id = $event['event_id'];
-
-    // ดึงข้อมูลการสมัครที่จำเป็นสำหรับสร้าง OTP
     $reg_query = $conn->query("SELECT reg_id, reg_status, create_date FROM registrations WHERE event_id = $e_id AND user_id = $u_id");
-
     if ($reg_query && $reg_query->num_rows > 0) {
         $reg_data = $reg_query->fetch_assoc();
         $registration_status = $reg_data['reg_status'];
     }
 }
 
-// 4. ส่วนแสดงปุ่มและสถานะการสมัคร
+// --- ส่วนที่เพิ่มใหม่: ระบบเช็คจำนวนคนเต็ม ---
+$current_count = 0;
+$count_query = $conn->query("SELECT COUNT(*) as total FROM registrations WHERE event_id = {$event['event_id']} AND reg_status IN ('approved', 'attended')");
+if ($count_query) {
+    $row = $count_query->fetch_assoc();
+    $current_count = $row['total'];
+}
+$is_full = ($current_count >= $event['max_people']); // เช็คว่าเต็มหรือยัง
+// --------------------------------------------------
+
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']):
 ?>
     <div style="padding: 15px; background: #eef2ff; border-radius: 8px;">
@@ -58,20 +63,13 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id'])
 
         <?php elseif ($registration_status === 'approved'): ?>
             <button disabled style="background: #2ecc71; color: white; padding: 10px 20px; border: none; border-radius: 5px;">✅ คุณเข้าร่วมกิจกรรมแล้ว</button>
-
-            <?php
-            // ดึงฟังก์ชัน OTP ที่ Vigo ทำไว้ใน includes/otp.php
-            // (ฟังก์ชันนี้จะทำงานได้เพราะมีการ require ไว้ใน index.php แล้ว)
-            $otp_code = get_event_otp($reg_data['reg_id'], $reg_data['create_date']);
-            ?>
-
+            <?php $otp_code = get_event_otp($reg_data['reg_id'], $reg_data['create_date']); ?>
             <div style="background: #eef2ff; border: 2px dashed #4f46e5; padding: 25px; text-align: center; border-radius: 10px; margin-top: 20px;">
                 <p style="margin: 0; color: #4f46e5; font-weight: bold;">รหัส OTP สำหรับเช็คชื่อหน้างาน (6 หลัก)</p>
                 <h1 style="font-size: 56px; letter-spacing: 12px; margin: 15px 0; color: #1e1b4b;">
                     <?php echo $otp_code; ?>
                 </h1>
                 <p style="color: #ef4444; font-weight: bold; margin-bottom: 0;">* รหัสจะเปลี่ยนอัตโนมัติทุก 30 นาที</p>
-                <small>(กรุณาแสดงรหัสนี้แก่เจ้าหน้าที่เมื่อถึงหน้างาน)</small>
             </div>
 
         <?php elseif ($registration_status === 'rejected'): ?>
@@ -82,19 +80,17 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id'])
                 <button disabled style="background: #3498db; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; width: 100%;">
                     🏁 คุณได้เข้าร่วมงานนี้เรียบร้อยแล้ว
                 </button>
-
-                <div style="margin-top: 15px; padding: 20px; background: #ebf8ff; border: 2px solid #3182ce; border-radius: 10px;">
-                    <p style="color: #2c5282; font-weight: bold; margin: 0;">
-                        ✨ ยืนยันตัวตนสำเร็จ! ขอบคุณที่เข้าร่วมกิจกรรม <br>
-                        รหัส OTP ของคุณถูกยกเลิกการใช้งานแล้ว
-                    </p>
-                </div>
             </div>
+
+        <?php elseif ($is_full): ?>
+            <button disabled style="background: #95a5a6; color: white; padding: 12px 25px; border: none; border-radius: 5px; width: 100%;">
+                🚫 ขออภัย กิจกรรมนี้เต็มแล้ว (<?php echo $current_count; ?>/<?php echo $event['max_people']; ?>)
+            </button>
 
         <?php else: ?>
             <a href="/register_event?id=<?php echo $event['event_id']; ?>">
                 <button type="button" style="background: #3498db; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                    🎯 ขอเข้าร่วมกิจกรรม
+                    🎯 ขอเข้าร่วมกิจกรรม (ว่าง: <?php echo $event['max_people'] - $current_count; ?> ที่)
                 </button>
             </a>
         <?php endif; ?>

@@ -22,8 +22,6 @@
     </form>
 </div>
 
-
-
 <table border="1" style="width:100%; border-collapse: collapse;">
     <tr style="background: #f0f0f0;">
         <th>ชื่อ-นามสกุล</th>
@@ -53,8 +51,12 @@
                     </span>
                 </td>
                 <td>
-                    <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=approved" style="color: green;">อนุมัติ</a> |
-                    <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=rejected" style="color: red;" onclick="return confirm('ยืนยันการปฏิเสธ?')">ปฏิเสธ</a>
+                    <?php if ($row['reg_status'] === 'attended'): ?>
+                        <span style="color: #666; font-style: italic;">บันทึกสำเร็จแล้ว</span>
+                    <?php else: ?>
+                        <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=approved" style="color: green;">อนุมัติ</a> |
+                        <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=rejected" style="color: red;" onclick="return confirm('ยืนยันการปฏิเสธ?')">ปฏิเสธ</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>
