@@ -97,3 +97,33 @@ function updateEvent($id, $name, $desc, $loc, $start, $end, $max) {
     $stmt->bind_param("sssssii", $name, $desc, $loc, $start, $end, $max, $id);
     return $stmt->execute();
 }
+
+// ฟังก์ชันดึงข้อมูลกิจกรรมแบบละเอียด (รวมชื่อผู้จัดงาน)
+function getEventDetail($event_id) {
+    global $conn;
+    // ใช้ JOIN เพื่อดึงชื่อผู้สร้าง (creator_name) มาแสดงผลในหน้าเดียวเลยครับ
+    $sql = "SELECT events.*, users.full_name AS creator_name 
+            FROM events 
+            JOIN users ON events.creator_id = users.user_id 
+            WHERE events.event_id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+// ฟังก์ชันดึงรูปภาพทั้งหมดของกิจกรรมนั้นๆ
+function getImagesByEventId($event_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM event_img WHERE event_id = ?");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $images = [];
+    while ($row = $result->fetch_assoc()) {
+        $images[] = $row;
+    }
+    return $images;
+}
