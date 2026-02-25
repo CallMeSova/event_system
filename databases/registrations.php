@@ -55,3 +55,30 @@ function getUserRegistrationHistory($user_id) {
     $stmt->execute();
     return $stmt->get_result(); // ส่งคืนชุดข้อมูลผลลัพธ์
 }
+
+// ฟังก์ชันเช็คว่าผู้ใช้เป็นเจ้าของกิจกรรมหรือไม่
+function isEventCreator($event_id, $user_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT creator_id FROM events WHERE event_id = ?");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $event = $stmt->get_result()->fetch_assoc();
+    return ($event && $event['creator_id'] == $user_id);
+}
+
+// ฟังก์ชันเช็คว่าเคยลงทะเบียนกิจกรรมนี้ไปหรือยัง
+function hasAlreadyRegistered($event_id, $user_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT reg_id FROM registrations WHERE event_id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $event_id, $user_id);
+    $stmt->execute();
+    return ($stmt->get_result()->num_rows > 0);
+}
+
+// ฟังก์ชันบันทึกการลงทะเบียนกิจกรรม
+function registerForEvent($event_id, $user_id) {
+    global $conn;
+    $stmt = $conn->prepare("INSERT INTO registrations (event_id, user_id, reg_status) VALUES (?, ?, 'pending')");
+    $stmt->bind_param("ii", $event_id, $user_id);
+    return $stmt->execute();
+}
