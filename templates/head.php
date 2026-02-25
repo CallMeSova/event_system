@@ -13,7 +13,6 @@
     </header>
     <nav>
         <a href="/">หน้าแรก</a>
-        <a href="/events">รายการกิจกรรม</a>
         <a href="/create_event">สร้างกิจกรรม</a>
 
         <?php if (isset($_SESSION['user_id'])) : ?>

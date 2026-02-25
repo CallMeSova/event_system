@@ -20,12 +20,13 @@
 
         <div>
             <label>วันที่เริ่มงาน:</label><br>
-            <input type="datetime-local" name="start_date" required>
+            <input type="datetime-local" name="start_date" id="startDate" required>
         </div><br>
 
         <div>
             <label>วันที่สิ้นสุดงาน:</label><br>
-            <input type="datetime-local" name="end_date" required>
+            <input type="datetime-local" name="end_date" id="endDate" required disabled>
+            <p id="date-error" style="color: red;"></p>
         </div><br>
 
         <div>
@@ -34,12 +35,15 @@
         </div><br>
 
         <div>
-            <label>รูปภาพกิจกรรม:</label><br>
-            <input type="file" name="image" accept="image/*">
+            <label>รูปภาพกิจกรรม (สูงสุด 5 รูป):</label><br>
+            <input type="file" name="images[]" id="imageInput" accept="image/*" multiple>
+            <button type="button" onclick="clearImages()">ล้างรูปภาพ</button>
+            <div id="error-msg" style="color: red;"></div>
         </div><br>
 
         <button type="submit">ยืนยันการสร้างกิจกรรม</button>
     </form>
 </section>
 
+<script src="/js/create_event.js"></script>
 <?php include 'footer.php'; ?>

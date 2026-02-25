@@ -28,18 +28,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($conn->query($sql)) {
         $event_id = $conn->insert_id;
 
-        if (!empty($_FILES['image']['name'])) {
-            $file_name = time() . "_" . $_FILES['image']['name'];
-            $target_path = "public/uploads/" . $file_name;
+        foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
+            $file_name = time() . "_" . $_FILES['images']['name'][$key];
+            $target_path = "../public/uploads/" . $file_name;
 
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-                $conn->query("INSERT INTO event_img (event_id, img_path) VALUES ('$event_id', '$file_name')");
+            if (move_uploaded_file($tmp_name, $target_path)) {
+                $sql_img = "INSERT INTO event_img (event_id, img_path) 
+                        VALUES ('$event_id', '$file_name')";
+                $conn->query($sql_img);
             }
         }
-
-        header("Location: /?success=event_created");
-        exit;
     }
+
+    echo "<script>
+            alert('สร้างกิจกรรมสำเร็จแล้ว!');
+            window.location.href = '/';
+        </script>";
+    exit;
 }
 
 renderView('create_event', $data);
