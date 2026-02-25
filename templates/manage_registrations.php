@@ -37,9 +37,18 @@
                 <td><?php echo $row['full_name']; ?></td>
                 <td><?php echo $row['email']; ?> / <?php echo $row['phone_number']; ?></td>
                 <td>
-                    <span style="font-weight: bold; color: <?php
-                                                            echo ($row['reg_status'] == 'approved') ? 'green' : (($row['reg_status'] == 'rejected') ? 'red' : 'orange');
-                                                            ?>">
+                    <span style="font-weight: bold; color: 
+                    <?php
+                    if ($row['reg_status'] == 'pending') {
+                        echo 'orange';
+                    } else if ($row['reg_status'] == 'approved') {
+                        echo 'green';
+                    } else if ($row['reg_status'] == 'rejected') {
+                        echo 'red';
+                    } else {
+                        echo 'blue';
+                    }
+                    ?>">
                         <?php echo strtoupper($row['reg_status']); ?>
                     </span>
                 </td>

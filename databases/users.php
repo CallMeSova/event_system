@@ -20,3 +20,12 @@ function createUser($full_name, $email, $password, $gender, $birth_date, $phone,
     $stmt->bind_param("sssssss", $full_name, $email, $password, $gender, $birth_date, $phone, $role);
     return $stmt->execute();
 }
+
+// ฟังก์ชันสำหรับดึงข้อมูลผู้ใช้จาก Email
+function getUserByEmail($email) {
+    global $conn; // ใช้การเชื่อมต่อจาก database.php
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc(); // ส่งข้อมูล User กลับไปเป็น Array
+}
