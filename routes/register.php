@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES ('$full_name', '$email', '$password', '$gender', '$birth_date', '$phone', '$role', NOW())";
 
         if ($conn->query($sql)) {
-            header("Location: /login?success=registered");
+            header("Location: /login");
             exit;
         } else {
             $data['error'] = "เกิดข้อผิดพลาดในการบันทึกข้อมูล";

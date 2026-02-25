@@ -5,6 +5,9 @@ const INDEX_URI = '';
 const INDEX_ROUTE = 'home';
 
 function normalizeURI($uri) {
+    // แยกเอาแค่ส่วนหน้าเครื่องหมาย ? ออกมา
+    $uri = explode('?', $uri)[0];
+
     $uri = strtolower(trim($uri, '/'));
     return ($uri == INDEX_URI ? INDEX_ROUTE : $uri);
 }
