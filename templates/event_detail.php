@@ -20,14 +20,18 @@
     <?php endif; ?>
 </div>
 
-<button type="button">ปุ่มเข้าร่วมกิจกรรม</button>
-
-<?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']): ?>
+<?php
+// 1. เช็คว่า Login หรือยัง และเป็นเจ้าของกิจกรรมไหม
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']):
+?>
+    <p style="color: blue; font-weight: bold;">คุณคือผู้สร้างกิจกรรมนี้</p>
+    <a href="/edit_event?id=<?php echo $event['event_id']; ?>" style="color: orange;">[แก้ไขกิจกรรม]</a>
     <a href="/delete_event?id=<?php echo $event['event_id']; ?>"
-        onclick="return confirm('คุณแน่ใจนะว่าจะลบกิจกรรมนี้?')"
-        style="color: red; font-weight: bold;">
-        [ลบกิจกรรมนี้]
-    </a>
+        onclick="return confirm('ยืนยันการลบ?')"
+        style="color: red; margin-left: 10px;">[ลบกิจกรรม]</a>
+
+<?php else: ?>
+    <button type="button">ปุ่มเข้าร่วมกิจกรรม</button>
 <?php endif; ?>
 
 <?php include 'footer.php'; ?>
