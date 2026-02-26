@@ -7,7 +7,7 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         event.preventDefault();
 
         // 2. แจ้งเตือนผู้ใช้
-        alert('❌ รหัสผ่านทั้งสองช่องไม่ตรงกันครับสุดหล่อ ลองเช็คดูอีกทีนะ!');
+        alert('❌ รหัสผ่านทั้งสองช่องไม่ตรงกันครับ ลองเช็คดูอีกทีนะ!');
 
         // 3. (Optional) โฟกัสไปที่ช่องยืนยันรหัสเพื่อให้เขาแก้
         document.getElementById('confirm_password').focus();
