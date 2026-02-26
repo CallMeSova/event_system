@@ -1,0 +1,6 @@
+# ละเว้นไฟล์ทั้งหมดในโฟลเดอร์ uploads
+public/uploads/*
+
+# แต่ไม่ต้องละเว้นไฟล์เหล่านี้ (ถ้าคุณมีไฟล์ตั้งต้นไว้โชว์)
+!public/uploads/no-image.png
+!.gitkeep
