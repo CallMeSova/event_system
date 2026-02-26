@@ -1,49 +1,54 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
     <?php foreach ($events as $event):
-        // 1. เรียกใช้ฟังก์ชันแทนการเขียน SQL ตรงๆ
         $current_reg = getConfirmedCount($event['event_id']);
-
-        // 2. คำนวณสถานะ
         $is_full = ($current_reg >= $event['max_people']);
-        $status_color = $is_full ? 'text-red-600' : 'text-green-600';
+        // ปรับการเลือกสีให้ดูซอฟต์ลงตามสไตล์ Modern UI
+        $status_bg = $is_full ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700';
     ?>
-        <div class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105">
-            <div class="aspect-[16/9] overflow-hidden relative">
+        <div class="group flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-2">
+            <div class="aspect-[16/10] overflow-hidden relative">
                 <img src="/uploads/<?php echo !empty($event['img_path']) ? $event['img_path'] : 'no-image.png'; ?>"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     alt="<?php echo $event['event_name']; ?>">
+
+                <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold shadow-sm <?php echo $status_bg; ?>">
+                    <?php echo $is_full ? '● เต็มแล้ว' : '● ว่าง ' . ($event['max_people'] - $current_reg) . ' ที่'; ?>
+                </div>
             </div>
 
-            <div class="p-4 flex flex-col flex-grow">
-                <h2 class="text-lg font-bold text-gray-800 line-clamp-1"><?php echo $event['event_name']; ?></h2>
-                <p class="text-sm text-gray-600 mb-2">
-                    <i class="fas fa-map-marker-alt mr-1"></i> <?php echo $event['location']; ?>
+            <div class="p-5 flex flex-col flex-grow">
+                <h2 class="text-lg font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                    <?php echo $event['event_name']; ?>
+                </h2>
+
+                <p class="text-sm text-gray-500 mt-1 flex items-center">
+                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <?php echo $event['location']; ?>
                 </p>
 
-                <p class="text-xs mb-3 <?php echo $status_color; ?> font-bold">
-                    <?php if ($is_full): ?>
-                        ❌ เต็มแล้ว
-                    <?php else: ?>
-                        ✅ ว่าง: <?php echo ($event['max_people'] - $current_reg); ?> ที่
-                    <?php endif; ?>
-                </p>
-
-                <div class="mt-auto border-t pt-3 mb-4 space-y-1">
-                    <div class="flex items-center text-xs text-blue-700 font-semibold">
-                        <span class="w-12">เริ่ม:</span>
-                        <span><?php echo date('d/m/Y H:i', strtotime($event['start_date'])); ?></span>
+                <div class="mt-4 pt-4 border-t border-dashed border-gray-100 space-y-2">
+                    <div class="flex items-center text-xs text-gray-600">
+                        <span class="w-16 font-medium text-blue-500">เริ่มกิจกรรม:</span>
+                        <span class="font-mono"><?php echo date('d M y | H:i', strtotime($event['start_date'])); ?></span>
                     </div>
-                    <div class="flex items-center text-xs text-red-600 font-semibold">
-                        <span class="w-12">จบ:</span>
-                        <span><?php echo date('d/m/Y H:i', strtotime($event['end_date'])); ?></span>
+                    <div class="flex items-center text-xs text-gray-600">
+                        <span class="w-16 font-medium text-red-400">สิ้นสุด:</span>
+                        <span class="font-mono"><?php echo date('d M y | H:i', strtotime($event['end_date'])); ?></span>
                     </div>
                 </div>
 
-                <a href="/event_detail?id=<?php echo $event['event_id']; ?>" class="block w-full">
-                    <div class="py-2 text-center text-white rounded-lg transition-colors font-medium <?php echo $is_full ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'; ?>">
-                        <?php echo $is_full ? 'ดูรายละเอียด (เต็มแล้ว)' : 'ดูรายละเอียด'; ?>
-                    </div>
-                </a>
+                <div class="mt-6">
+                    <a href="/event_detail?id=<?php echo $event['event_id']; ?>"
+                        class="block w-full py-2.5 text-center text-sm font-bold rounded-xl transition-all
+                       <?php echo $is_full
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200'; ?>">
+                        <?php echo $is_full ? 'ปิดรับสมัคร' : 'ดูรายละเอียดกิจกรรม'; ?>
+                    </a>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>
