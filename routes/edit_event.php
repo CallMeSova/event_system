@@ -1,6 +1,27 @@
 <?php
 global $conn;
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    // รับค่า ID ของรูปที่ถูกติ๊กเลือกมาลบ
+    if (isset($_POST['delete_images']) && is_array($_POST['delete_images'])) {
+        foreach ($_POST['delete_images'] as $img_id) {
+            // 1. ค้นหาชื่อไฟล์เพื่อลบในโฟลเดอร์
+            $img_query = $conn->query("SELECT img_path FROM event_img WHERE img_id = $img_id");
+            if ($img_data = $img_query->fetch_assoc()) {
+                $file_path = "public/uploads/" . $img_data['img_path'];
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+            // 2. ลบออกจาก Database
+            $conn->query("DELETE FROM event_img WHERE img_id = $img_id");
+        }
+    }
+
+    // ... ส่วนของ Code อัปเดตกิจกรรมเดิมของ Vigo ...
+}
+
 $event_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $user_id = $_SESSION['user_id'] ?? 0;
 

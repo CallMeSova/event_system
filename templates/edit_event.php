@@ -10,7 +10,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </div>
-                <h1 class="text-2xl font-extrabold text-gray-900">แก้ไขกิจกรรม: <span class="text-orange-500"><?php echo $event['event_name']; ?></span></h1>
+                <h1 class="text-2xl font-extrabold text-gray-900">แก้ไขกิจกรรม: <span class="text-orange-500"><?php echo htmlspecialchars($event['event_name']); ?></span></h1>
             </div>
             <a href="/event_detail?id=<?php echo $event['event_id']; ?>" class="text-sm font-bold text-gray-400 hover:text-gray-600 transition">ยกเลิก</a>
         </div>
@@ -19,19 +19,19 @@
 
             <div class="md:col-span-2">
                 <label class="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">ชื่อกิจกรรม</label>
-                <input type="text" name="event_name" value="<?php echo $event['event_name']; ?>" required
+                <input type="text" name="event_name" value="<?php echo htmlspecialchars($event['event_name']); ?>" required
                     class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition-all">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">รายละเอียด</label>
                 <textarea name="description" rows="3"
-                    class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition-all resize-none"><?php echo $event['description']; ?></textarea>
+                    class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition-all resize-none"><?php echo htmlspecialchars($event['description']); ?></textarea>
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">สถานที่</label>
-                <input type="text" name="location" value="<?php echo $event['location']; ?>"
+                <input type="text" name="location" value="<?php echo htmlspecialchars($event['location']); ?>"
                     class="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-orange-100 outline-none transition-all">
             </div>
 
@@ -56,14 +56,27 @@
             </div>
 
             <div class="md:col-span-2 bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-200">
-                <h3 class="text-xs font-bold text-gray-500 mb-3 ml-1 uppercase tracking-wider">รูปภาพปัจจุบัน</h3>
-                <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                    <?php while ($img = $images->fetch_assoc()): ?>
-                        <div class="relative flex-shrink-0 group">
-                            <img src="/uploads/<?php echo $img['img_path']; ?>"
-                                class="w-20 h-20 object-cover rounded-xl shadow-sm border-2 border-white group-hover:opacity-75 transition-opacity">
-                        </div>
-                    <?php endwhile; ?>
+                <h3 class="text-xs font-bold text-gray-500 mb-3 ml-1 uppercase tracking-wider">รูปภาพปัจจุบัน (ติ๊กเพื่อเลือกรูปที่จะลบ)</h3>
+                <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                    <?php if ($images->num_rows > 0): ?>
+                        <?php while ($img = $images->fetch_assoc()): ?>
+                            <div class="relative flex-shrink-0 group">
+                                <label class="cursor-pointer block relative">
+                                    <input type="checkbox" name="delete_images[]" value="<?php echo $img['img_id']; ?>" class="hidden peer">
+                                    <img src="/uploads/<?php echo $img['img_path']; ?>"
+                                        class="w-24 h-24 object-cover rounded-2xl shadow-sm border-2 border-white transition-all peer-checked:opacity-30 peer-checked:grayscale peer-checked:border-red-500">
+
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+                                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </div>
+                                </label>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <p class="text-xs text-gray-400 italic py-4">ยังไม่มีรูปภาพประกอบกิจกรรม</p>
+                    <?php endif; ?>
                 </div>
             </div>
 
