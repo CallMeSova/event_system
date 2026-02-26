@@ -41,7 +41,7 @@
 
                 <a href="/event_detail?id=<?php echo $event['event_id']; ?>" class="block w-full">
                     <div class="py-2 text-center text-white rounded-lg transition-colors font-medium <?php echo $is_full ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'; ?>">
-                        <?php echo $is_full ? 'ดูรายละเอียด (เต็มแล้ว)' : 'สมัครเลย'; ?>
+                        <?php echo $is_full ? 'ดูรายละเอียด (เต็มแล้ว)' : 'ดูรายละเอียด'; ?>
                     </div>
                 </a>
             </div>
