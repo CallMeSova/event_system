@@ -9,13 +9,17 @@
                 <div>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-2"><?php echo $event['event_name']; ?></h1>
                     <div class="flex flex-wrap gap-4 text-white/90 text-sm">
-                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg><?php echo $event['location']; ?></span>
-                        <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            </svg><?php echo $event['location']; ?>
+                        </span>
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>โดย: <?php echo $event['creator_name'] ?? 'ไม่ระบุ'; ?></span>
+                            </svg>โดย: <?php echo $event['creator_name'] ?? 'ไม่ระบุ'; ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -52,8 +56,8 @@
         <div class="lg:sticky lg:top-24 space-y-6">
             <div class="bg-white rounded-2xl p-6 shadow-lg border border-indigo-50">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="text-gray-500 text-sm">จำนวนรับสมัคร</span>
-                    <span class="text-xl font-bold text-indigo-600"><?php echo $event['max_people']; ?> คน</span>
+                    <span class="text-gray-500 text-sm font-bold uppercase tracking-wider">จำนวนรับสมัคร</span>
+                    <span class="text-xl font-black text-indigo-600"><?php echo $event['max_people']; ?> คน</span>
                 </div>
 
                 <?php
@@ -61,36 +65,44 @@
                 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['creator_id']):
                 ?>
                     <div class="space-y-3">
-                        <p class="text-center text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">แผงจัดการผู้สร้าง</p>
-                        <a href="/manage_registrations?id=<?php echo $event['event_id']; ?>" class="block w-full text-center bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">จัดการผู้สมัคร</a>
-                        <div class="grid grid-cols-2 gap-2">
-                            <a href="/edit_event?id=<?php echo $event['event_id']; ?>" class="text-center bg-gray-50 text-orange-500 py-2 rounded-xl font-bold border border-orange-100 hover:bg-orange-50 transition">แก้ไข</a>
-                            <a href="/delete_event?id=<?php echo $event['event_id']; ?>" class="text-center bg-gray-50 text-red-500 py-2 rounded-xl font-bold border border-red-100 hover:bg-red-50 transition" onclick="return confirm('ยืนยันการลบกิจกรรม?')">ลบ</a>
+                        <p class="text-center text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Admin Dashboard</p>
+
+                        <a href="/manage_registrations?id=<?php echo $event['event_id']; ?>" class="block w-full text-center bg-indigo-600 text-white py-3.5 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 active:scale-95">
+                            👥 จัดการผู้สมัคร
+                        </a>
+
+                        <a href="/event_stats?id=<?php echo $event['event_id']; ?>" class="block w-full text-center bg-green-600 text-white py-3.5 rounded-2xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-100 active:scale-95">
+                            📊 รายงานสถิติกิจกรรม
+                        </a>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <a href="/edit_event?id=<?php echo $event['event_id']; ?>" class="text-center bg-gray-50 text-orange-500 py-2.5 rounded-xl font-bold border border-orange-100 hover:bg-orange-100 transition">แก้ไข</a>
+                            <a href="/delete_event?id=<?php echo $event['event_id']; ?>" class="text-center bg-gray-50 text-red-500 py-2.5 rounded-xl font-bold border border-red-100 hover:bg-red-100 transition" onclick="return confirm('ยืนยันการลบกิจกรรม?')">ลบ</a>
                         </div>
                     </div>
                 <?php else: ?>
                     <div class="space-y-4">
                         <?php if ($status === 'pending'): ?>
-                            <div class="bg-yellow-50 text-yellow-700 p-4 rounded-xl text-center font-bold border border-yellow-100 animate-pulse">⏳ รอการอนุมัติจากผู้จัด</div>
+                            <div class="bg-yellow-50 text-yellow-700 p-4 rounded-xl text-center font-bold border border-yellow-100 animate-pulse text-sm">⏳ รอการอนุมัติจากผู้จัด</div>
                         <?php elseif ($status === 'approved'): ?>
-                            <div class="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-100 mb-4">✅ อนุมัติการเข้าร่วมแล้ว</div>
+                            <div class="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-100 mb-2 text-sm">✅ อนุมัติการเข้าร่วมแล้ว</div>
                             <?php $otp = get_event_otp($reg_data['reg_id'], $reg_data['create_date']); ?>
-                            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 text-center rounded-2xl shadow-xl shadow-indigo-200">
-                                <p class="text-white/80 text-xs font-bold uppercase mb-2">OTP Check-in</p>
-                                <h1 class="text-4xl font-mono font-bold text-white tracking-[0.3em] ml-[0.3em]"><?php echo $otp; ?></h1>
-                                <p class="text-white/60 text-[10px] mt-4 italic">* รีเฟรชทุก 30 นาที</p>
+                            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 text-center rounded-2xl shadow-xl shadow-indigo-200 border-b-4 border-indigo-800">
+                                <p class="text-white/80 text-[10px] font-black uppercase tracking-widest mb-2">Check-in OTP</p>
+                                <h1 class="text-4xl font-mono font-bold text-white tracking-[0.2em] ml-2"><?php echo $otp; ?></h1>
+                                <p class="text-white/60 text-[9px] mt-4 italic font-medium">* รหัสจะรีเฟรชใหม่ทุก 30 นาที</p>
                             </div>
                         <?php elseif ($status === 'rejected'): ?>
-                            <div class="bg-red-50 text-red-600 p-4 rounded-xl text-center font-bold border border-red-100">❌ ขออภัย คำขอถูกปฏิเสธ</div>
+                            <div class="bg-red-50 text-red-600 p-4 rounded-xl text-center font-bold border border-red-100 text-sm">❌ ขออภัย คำขอถูกปฏิเสธ</div>
                         <?php elseif ($status === 'attended'): ?>
-                            <div class="bg-blue-600 text-white p-5 rounded-2xl text-center font-bold shadow-lg">🏁 เข้าร่วมงานสำเร็จแล้ว</div>
+                            <div class="bg-blue-600 text-white p-5 rounded-2xl text-center font-black shadow-lg shadow-blue-100">🏁 เข้าร่วมงานเรียบร้อย</div>
                         <?php elseif ($is_full): ?>
-                            <button disabled class="w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold cursor-not-allowed">🚫 กิจกรรมเต็มแล้ว (<?php echo $current_count; ?>/<?php echo $event['max_people']; ?>)</button>
+                            <button disabled class="w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold cursor-not-allowed text-sm">🚫 กิจกรรมเต็มแล้ว (<?php echo $current_count; ?>/<?php echo $event['max_people']; ?>)</button>
                         <?php else: ?>
                             <a href="/register_event?id=<?php echo $event['event_id']; ?>" class="block w-full">
-                                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all transform active:scale-95">
+                                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all transform active:scale-95 leading-tight">
                                     🎯 ส่งคำขอเข้าร่วม <br>
-                                    <span class="text-[10px] font-normal opacity-80">(ว่าง <?php echo $event['max_people'] - $current_count; ?> ที่นั่ง)</span>
+                                    <span class="text-[10px] font-normal opacity-80 uppercase tracking-tighter">ว่าง <?php echo $event['max_people'] - $current_count; ?> ที่นั่ง</span>
                                 </button>
                             </a>
                         <?php endif; ?>
