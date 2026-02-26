@@ -25,6 +25,7 @@
                     <div class="hidden md:ml-6 md:flex md:space-x-4">
                         <a href="/" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition">หน้าแรก</a>
                         <a href="/create_event" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition">สร้างกิจกรรม</a>
+                        <a href="/my_event" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition">อีเวนต์ของฉัน</a>
                     </div>
                 </div>
 
