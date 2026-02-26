@@ -25,6 +25,23 @@ function getFilePath($uri) {
 function dispath($uri, $method) {
     $uri = normalizeURI($uri);
 
+    $timeout_duration = 3600;
+    if (isset($_SESSION['user_id'])) {
+        if (isset($_SESSION['last_activity'])) {
+            $now_time = time() - $_SESSION['last_activity'];
+            if ($now_time > $timeout_duration) {
+                session_unset();
+                session_destroy();
+                echo '<script>
+                        alert("ไม่ได้ใช้ระบบเป็นเวลานาน กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+                        window.location.href = "/login";
+                    </script>';
+                exit();
+            }
+        }
+        $_SESSION['last_activity'] = time();
+    }
+
     $public_page = ['home', 'login', 'register',];
     if (!in_array($uri, $public_page) && !isset($_SESSION['user_id'])) {
         echo "<script>
