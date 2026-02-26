@@ -19,10 +19,10 @@
                 <select name="filter_status" onchange="this.form.submit()"
                     class="bg-gray-50 border-none rounded-xl text-sm font-bold text-gray-700 focus:ring-2 focus:ring-indigo-100 py-2 pl-3 pr-10 cursor-pointer">
                     <option value="">ทั้งหมด</option>
-                    <option value="pending" <?php echo ($current_filter == 'pending') ? 'selected' : ''; ?>>⏳ PENDING</option>
-                    <option value="approved" <?php echo ($current_filter == 'approved') ? 'selected' : ''; ?>>✅ APPROVED</option>
-                    <option value="rejected" <?php echo ($current_filter == 'rejected') ? 'selected' : ''; ?>>❌ REJECTED</option>
-                    <option value="attended" <?php echo ($current_filter == 'attended') ? 'selected' : ''; ?>>🏃 ATTENDED</option>
+                    <option value="pending" <?php echo ($current_filter == 'pending') ? 'selected' : ''; ?>>PENDING</option>
+                    <option value="approved" <?php echo ($current_filter == 'approved') ? 'selected' : ''; ?>>APPROVED</option>
+                    <option value="rejected" <?php echo ($current_filter == 'rejected') ? 'selected' : ''; ?>>REJECTED</option>
+                    <option value="attended" <?php echo ($current_filter == 'attended') ? 'selected' : ''; ?>>ATTENDED</option>
                 </select>
                 <?php if (!empty($current_filter)): ?>
                     <a href="/manage_registrations?id=<?php echo $event_id; ?>" class="p-2 text-gray-400 hover:text-red-500 transition" title="ล้างการกรอง">
