@@ -2,11 +2,13 @@
 <h1><?php echo $title; ?></h1>
 
 <section>
-    <?php if (isset($error)) {
-        echo $error;
-    } ?>
+    <?php if (isset($error)): ?>
+        <div style="color: red; margin-bottom: 15px;">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
 
-    <form action="" method="POST">
+    <form action="" method="POST" id="registerForm">
         <div>
             <label>ชื่อ-นามสกุล:</label><br>
             <input type="text" name="full_name" required>
@@ -19,7 +21,12 @@
 
         <div>
             <label>รหัสผ่าน:</label><br>
-            <input type="password" name="password" required>
+            <input type="password" name="password" id="password" required>
+        </div><br>
+
+        <div>
+            <label>ยืนยันรหัสผ่าน:</label><br>
+            <input type="password" name="confirm_password" id="confirm_password" required>
         </div><br>
 
         <div>
@@ -47,5 +54,7 @@
 
     <p>มีบัญชีอยู่แล้ว? <a href="/login">เข้าสู่ระบบ</a></p>
 </section>
+
+<script src="/js/register.js"></script>
 
 <?php include 'footer.php'; ?>
