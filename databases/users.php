@@ -43,3 +43,12 @@ function getUserByEmail($email) {
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc(); // ส่งข้อมูล User กลับไปเป็น Array
 }
+
+function getProfileUser($user_id){
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
+    $stmt -> bind_param("i", $user_id);
+    $stmt ->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}

@@ -35,7 +35,7 @@
 
                             <div class="flex flex-col items-end">
                                 <span class="text-xs text-gray-400">เข้าใช้งานโดย</span>
-                                <span class="text-sm font-semibold text-gray-700 underline decoration-indigo-300"><?php echo $_SESSION['full_name']; ?></span>
+                                <a href="/profile" class="text-sm font-semibold text-gray-700 underline decoration-indigo-300"><?php echo $_SESSION['full_name']; ?></a>
                             </div>
 
                             <a href="/logout" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-sm font-bold transition-all border border-red-200">
