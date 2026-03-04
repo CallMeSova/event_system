@@ -18,8 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn->query("DELETE FROM event_img WHERE img_id = $img_id");
         }
     }
-
-    // ... ส่วนของ Code อัปเดตกิจกรรมเดิมของ Vigo ...
 }
 
 $event_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
