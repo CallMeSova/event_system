@@ -82,7 +82,7 @@
 
             <div class="md:col-span-2">
                 <label class="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">เพิ่มรูปภาพใหม่ (เลือกได้หลายรูป)</label>
-                <input type="file" name="images[]" multiple
+                <input type="file" name="images[]" multiple accept="image/*"
                     class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer">
             </div>
 
