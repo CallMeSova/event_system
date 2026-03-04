@@ -51,7 +51,7 @@
                                             break;
                                         default:
                                             $badge_class = 'bg-yellow-100 text-yellow-700';
-                                            $label = 'รอตรวจสอบ';
+                                            $label = 'รออนุมัติ';
                                             break;
                                     }
                                     ?>
