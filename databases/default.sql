@@ -43,3 +43,13 @@ CREATE TABLE registrations (
     FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+-- คำสั่งเคลียร์ข้อมูลใน database
+SET FOREIGN_KEY_CHECKS = 0; -- ปิดการเช็คความสัมพันธ์ชั่วคราว
+
+TRUNCATE TABLE registrations;
+TRUNCATE TABLE event_img;
+TRUNCATE TABLE events;
+TRUNCATE TABLE users;
+
+SET FOREIGN_KEY_CHECKS = 1; -- เปิดการเช็คกลับคืน
