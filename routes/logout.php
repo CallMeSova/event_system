@@ -1,6 +1,6 @@
 <?php
 
-//ล้างค่าตัวแปร Session ทั้งหมด
+//ล้างค่าตัวแปร Session ทั้งหมดw
 $_SESSION = array();
 
 session_destroy();
