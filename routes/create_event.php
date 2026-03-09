@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_FILES['images']['tmp_name'][0])) {
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 $file_name = time() . "_" . $_FILES['images']['name'][$key];
-                $target_path = "../public/uploads/" . $file_name;
+                $target_path = dirname(__DIR__) .  "/uploads/" . $file_name;
 
                 if (move_uploaded_file($tmp_name, $target_path)) {
                     // บันทึกชื่อรูปลง DB ผ่านฟังก์ชันที่แยกไว้
