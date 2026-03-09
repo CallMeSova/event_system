@@ -22,7 +22,7 @@ function getFilePath($uri) {
     return ROUTE_DIR . '/' . normalizeURI($uri) . '.php';
 }
 
-function dispath($uri, $method) {
+function dispatch($uri, $method) {
     $uri = normalizeURI($uri);
 
     $timeout_duration = 3600;

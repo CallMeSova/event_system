@@ -20,4 +20,4 @@ require_once DATABASES_DIR . '/users.php';
 require_once DATABASES_DIR . '/event.php';
 require_once DATABASES_DIR . '/registrations.php';
 
-dispath($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
