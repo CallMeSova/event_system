@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['images']) && $_FILES['images']['error'][0] === 0) {
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 $file_name = time() . "_" . $_FILES['images']['name'][$key];
-                $target_path = "../public/uploads/" . $file_name;
+                $target_path = dirname(__DIR__) . "/uploads/" . $file_name;
 
                 if (move_uploaded_file($tmp_name, $target_path)) {
                     saveEventImage($event_id, $file_name); // ใช้ฟังก์ชันเดิมที่เราทำไว้ใน events.php
