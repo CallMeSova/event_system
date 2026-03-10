@@ -12,7 +12,7 @@
             <h2 class="text-2xl font-extrabold text-white uppercase tracking-tight">
                 <?= htmlspecialchars($user['full_name']) ?>
             </h2>
-            <p class="text-indigo-100 text-sm mt-1">สมาชิกในระบบ EventHub</p>
+            <p class="text-indigo-100 text-sm mt-1">สมาชิกในระบบ EventManage</p>
         </div>
 
         <div class="p-8 md:p-10 space-y-6">
