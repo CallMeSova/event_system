@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <?php if ($my_history->num_rows > 0): while ($row = $my_history->fetch_assoc()): ?>
+                    <?php if (count($my_history) > 0): foreach ($my_history as $row): ?>
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 font-bold text-gray-800">
                                     <?php echo $row['event_name']; ?>
@@ -69,7 +69,7 @@
                                     </a>
                                 </td>
                             </tr>
-                        <?php endwhile;
+                        <?php endforeach;
                     else: ?>
                         <tr>
                             <td colspan="4" class="px-6 py-20 text-center text-gray-400 italic font-medium">

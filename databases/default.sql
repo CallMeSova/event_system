@@ -44,6 +44,8 @@ CREATE TABLE registrations (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+ALTER TABLE registrations ADD COLUMN otp_code VARCHAR(6) AFTER reg_status;
+
 -- คำสั่งเคลียร์ข้อมูลใน database
 SET FOREIGN_KEY_CHECKS = 0; -- ปิดการเช็คความสัมพันธ์ชั่วคราว
 
