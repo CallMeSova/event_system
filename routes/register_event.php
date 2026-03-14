@@ -24,9 +24,13 @@ if (isEventCreator($event_id, $user_id)) {
 if (hasAlreadyRegistered($event_id, $user_id)) {
     echo "<script>alert('คุณได้ส่งคำขอเข้าร่วมไปแล้ว'); window.history.back();</script>";
 } else {
-    // 4. บันทึกคำขอ
-    if (registerForEvent($event_id, $user_id)) {
-        echo "<script>alert('ส่งคำขอเข้าร่วมสำเร็จ! กรุณารอเจ้าของงานอนุมัติ'); window.location.href='/event_detail?id=$event_id';</script>";
+    // 4. ระบบ OTP ใหม่: สุ่มตัวเลข 6 หลัก
+    $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+    // 5. บันทึกคำขอพร้อมรหัส OTP ลง Database
+    // (เรียกใช้ฟังก์ชันจาก databases/registrations.php)
+    if (registerForEvent($event_id, $user_id, $otp)) {
+        echo "<script>alert('ส่งคำขอเข้าร่วมสำเร็จ! รหัส OTP ของคุณคือ: $otp'); window.location.href='/event_detail?id=$event_id';</script>";
     } else {
         echo "<script>alert('เกิดข้อผิดพลาดในการลงทะเบียน'); window.history.back();</script>";
     }

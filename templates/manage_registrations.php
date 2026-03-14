@@ -35,30 +35,6 @@
         </div>
     </div>
 
-    <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-8 rounded-3xl shadow-lg shadow-orange-100 mb-10 text-white">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div class="text-center lg:text-left">
-                <h3 class="text-2xl font-black mb-2 flex items-center justify-center lg:justify-start">
-                    <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    ตรวจสอบรหัส OTP หน้างาน
-                </h3>
-                <p class="text-orange-100 text-sm">กรอกรหัส 6 หลักจากผู้เข้าร่วมเพื่อบันทึกการเข้างาน</p>
-            </div>
-
-            <form action="/check_otp" method="POST" class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                <input type="hidden" name="event_id" value="<?php echo $event_id; ?>">
-                <input type="text" name="input_otp" placeholder="000000" maxlength="6" required
-                    class="text-3xl font-mono font-bold text-center tracking-[0.5em] py-3 px-6 rounded-2xl border-none text-orange-600 focus:ring-4 focus:ring-orange-300 outline-none w-full sm:w-64 shadow-inner">
-                <button type="submit"
-                    class="bg-white text-orange-600 font-black py-4 px-8 rounded-2xl hover:bg-orange-50 transition-all active:scale-95 shadow-md">
-                    ยืนยันเข้างาน
-                </button>
-            </form>
-        </div>
-    </div>
-
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -67,6 +43,7 @@
                         <th class="px-6 py-5">ข้อมูลผู้สมัคร</th>
                         <th class="px-6 py-5">สถานะปัจจุบัน</th>
                         <th class="px-6 py-5 text-center">จัดการ</th>
+                        <th class="px-6 py-5 text-center">เช็คชื่อเข้างาน</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -102,14 +79,17 @@
                                                 บันทึกแล้ว
                                             </span>
                                         <?php else: ?>
-                                            <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=approved"
-                                                class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition" title="อนุมัติ">
+                                            <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=approved&event_id=<?php echo $event_id; ?>"
+                                                class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition"
+                                                onclick="return confirm('ยืนยันการอนุมัติ?')">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                 </svg>
                                             </a>
-                                            <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=rejected"
-                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="ปฏิเสธ" onclick="return confirm('ยืนยันการปฏิเสธผู้สมัคร?')">
+
+                                            <a href="/update_reg?reg_id=<?php echo $row['reg_id']; ?>&status=rejected&event_id=<?php echo $event_id; ?>"
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                                onclick="return confirm('ยืนยันการปฏิเสธ?')">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
@@ -117,7 +97,28 @@
                                         <?php endif; ?>
                                     </div>
                                 </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <?php if ($row['reg_status'] === 'attended'): ?>
+                                            <span class="text-xs text-blue-500 font-bold italic flex items-center">
+                                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                เข้างานแล้ว
+                                            </span>
+                                        <?php elseif ($row['reg_status'] === 'approved'): ?>
+                                            <a href="/check_user_otp?reg_id=<?php echo $row['reg_id']; ?>&id=<?php echo $event_id; ?>"
+                                                class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black px-4 py-2 rounded-xl shadow-md shadow-orange-100 transition-all active:scale-95 flex items-center">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                                </svg>
+                                                เช็คชื่อเข้างาน
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
                             </tr>
+
                         <?php endwhile;
                     else: ?>
                         <tr>

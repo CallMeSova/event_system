@@ -85,13 +85,36 @@
                         <?php if ($status === 'pending'): ?>
                             <div class="bg-yellow-50 text-yellow-700 p-4 rounded-xl text-center font-bold border border-yellow-100 animate-pulse text-sm">⏳ รอการอนุมัติจากผู้จัด</div>
                         <?php elseif ($status === 'approved'): ?>
-                            <div class="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-100 mb-2 text-sm">✅ อนุมัติการเข้าร่วมแล้ว</div>
-                            <?php $otp = get_event_otp($reg_data['reg_id'], $reg_data['create_date']); ?>
+                            <div class="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-100 mb-2 text-sm">
+                                ✅ อนุมัติการเข้าร่วมแล้ว
+                            </div>
+
                             <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 text-center rounded-2xl shadow-xl shadow-indigo-200 border-b-4 border-indigo-800">
                                 <p class="text-white/80 text-[10px] font-black uppercase tracking-widest mb-2">Check-in OTP</p>
-                                <h1 class="text-4xl font-mono font-bold text-white tracking-[0.2em] ml-2"><?php echo $otp; ?></h1>
-                                <p class="text-white/60 text-[9px] mt-4 italic font-medium">* รหัสจะรีเฟรชใหม่ทุก 30 นาที</p>
+
+                                <h1 id="otp-display" class="text-4xl font-mono font-bold text-white tracking-[0.2em] ml-2">------</h1>
+
+                                <button id="show-otp-btn" onclick="revealOTP('<?php echo $reg_data['otp_code']; ?>')"
+                                    class="mt-4 bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold py-2 px-4 rounded-xl backdrop-blur-sm transition-all active:scale-95 border border-white/10">
+                                    👁️ คลิกเพื่อแสดงรหัส
+                                </button>
+
+                                <p class="text-white/60 text-[9px] mt-4 italic font-medium">* โปรดแสดงรหัสนี้แก่ผู้จัดงานเพื่อเช็คชื่อ</p>
+                                <?php
+                                // โค้ดสำหรับใส่ในหน้า event_detail.php
+                                $minutes_left = 30 - floor((time() - strtotime($reg_data['create_date'])) / 60);
+                                echo "<p class='text-white/50 text-[9px]'>รหัสจะเปลี่ยนใหม่ในอีก $minutes_left นาที</p>";
+                                ?>
                             </div>
+
+                            <script>
+                                function revealOTP(otp) {
+                                    // เปลี่ยนขีดเป็นรหัสจริง
+                                    document.getElementById('otp-display').innerText = otp;
+                                    // ซ่อนปุ่มหลังจากกดแล้ว
+                                    document.getElementById('show-otp-btn').classList.add('hidden');
+                                }
+                            </script>
                         <?php elseif ($status === 'rejected'): ?>
                             <div class="bg-red-50 text-red-600 p-4 rounded-xl text-center font-bold border border-red-100 text-sm">❌ ขออภัย คำขอถูกปฏิเสธ</div>
                         <?php elseif ($status === 'attended'): ?>
