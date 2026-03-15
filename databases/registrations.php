@@ -87,7 +87,7 @@ function verifyUserOTP($reg_id, $input_otp) {
 
     if ($reg && $reg['otp_code'] === $input_otp) {
         // 2. คำนวณเวลา (30 นาที = 1800 วินาที)
-        $is_expired = (time() - strtotime($reg['create_date'])) > 1800; // 👈 กำหนดเวลาตรงนี้ (วินาที)
+        $is_expired = (time() - strtotime($reg['create_date'])) > 1800; //  กำหนดเวลาตรงนี้ (วินาที)
 
         if (!$is_expired) {
             return true; // รหัสถูกต้องและยังไม่หมดอายุ
