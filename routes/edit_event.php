@@ -6,16 +6,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // รับค่า ID ของรูปที่ถูกติ๊กเลือกมาลบ
     if (isset($_POST['delete_images']) && is_array($_POST['delete_images'])) {
         foreach ($_POST['delete_images'] as $img_id) {
-            // 1. ค้นหาชื่อไฟล์เพื่อลบในโฟลเดอร์
-            $img_query = $conn->query("SELECT img_path FROM event_img WHERE img_id = $img_id");
-            if ($img_data = $img_query->fetch_assoc()) {
+
+            // --- ขั้นตอนที่ 1: ดึงชื่อไฟล์มาเก็บไว้ก่อน (SELECT) ---
+            $stmt_get = $conn->prepare("SELECT img_path FROM event_img WHERE img_id = ?");
+            $stmt_get->bind_param("i", $img_id); // ใช้ bind_param แทนการต่อ string
+            $stmt_get->execute();
+            $result = $stmt_get->get_result();
+
+            if ($img_data = $result->fetch_assoc()) {
                 $file_path = "public/uploads/" . $img_data['img_path'];
-                if (file_exists($file_path)) {
-                    unlink($file_path);
+
+                // --- ขั้นตอนที่ 2: ลบ Record ใน Database (DELETE) ---
+                $stmt_del = $conn->prepare("DELETE FROM event_img WHERE img_id = ?");
+                $stmt_del->bind_param("i", $img_id); // ใช้ bind_param ปลอดภัยที่สุด
+
+                if ($stmt_del->execute()) {
+                    // --- ขั้นตอนที่ 3: ถ้าลบใน DB สำเร็จ ค่อยสั่งลบไฟล์จริง ---
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
                 }
+                $stmt_del->close();
             }
-            // 2. ลบออกจาก Database
-            $conn->query("DELETE FROM event_img WHERE img_id = $img_id");
+            $stmt_get->close();
         }
     }
 }
