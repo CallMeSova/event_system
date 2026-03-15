@@ -36,7 +36,7 @@ function dispatch($uri, $method) {
                         alert("ไม่ได้ใช้ระบบเป็นเวลานาน กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
                         window.location.href = "/login";
                     </script>';
-                exit();
+                exit;
             }
         }
         $_SESSION['last_activity'] = time();
